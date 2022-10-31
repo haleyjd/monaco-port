@@ -71,4 +71,7 @@ $wgMonacoUseMoreButton = true;          // Set to false to disable the more butt
 $wgMonacoUseSitenoticeIsland = false;   // Use an island above the content area for the sitenotice instead of embedding it above the page title
 $wgMonacoUseMasthead = true;            // Show the masthead on userpages
 $wgMonacoCompactSpecialPages = false;   // Compact the tab_bar on special pages
-
+$wgMonacoEnablePaypal = false;          // Enable a Paypal button
+$wgMonacoPaypalID = "";                 // Set to Paypal ID if button is enabled
+$wgMonacoEnablePatreon = false;         // Enable a Patreon button
+$wgMonacoPatreonURL = "";               // Set to Patreon URL if button is enabled

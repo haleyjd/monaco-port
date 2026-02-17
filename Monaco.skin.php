@@ -771,7 +771,7 @@ wfProfileIn( __METHOD__ . '-body'); ?>
 					<?php if(!$wgMonacoUseSitenoticeIsland && $this->data['sitenotice']) { ?><div id="siteNotice"><?php $this->html('sitenotice') ?></div><?php } ?>
 					<?php if(method_exists($this, 'getIndicators')) { echo $this->getIndicators(); } ?>
 					<?php $this->printFirstHeading(); ?>
-					<div id="bodyContent" class="body_content">
+					<div id="bodyContent" class="mw-body-content body_content">
 						<h2 id="siteSub"><?php $this->msg('tagline') ?></h2>
 						<?php if($this->data['subtitle']) { ?><div id="contentSub"><?php $this->html('subtitle') ?></div><?php } ?>
 						<?php if($this->data['undelete']) { ?><div id="contentSub2"><?php     $this->html('undelete') ?></div><?php } ?>

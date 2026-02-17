@@ -6,7 +6,7 @@ About
 
 This is an unbranded fork of the Monaco skin originally developed by Wikia
 which is being maintained for use at [DoomWiki.org](http://doomwiki.org). It was
-also previously deployed at the Orain non-profit wiki farm before it went 
+also previously deployed at the Orain non-profit wiki farm before it went
 offline.
 
 Compared to the original version of the skin, this fork now supports MediaWiki
@@ -20,12 +20,12 @@ New features in this fork over `dantman/monaco-port` include:
 * A new Widgets framework which cooperates with [Extension:Gadgets](https://www.mediawiki.org/wiki/Extension:Gadgets) to allow sidebar content to be defined through the MediaWiki frontend.
 * Special support for [Extension:FlaggedRevs](https://www.mediawiki.org/wiki/Extension:FlaggedRevs) and [Extension:MobileFrontend](https://www.mediawiki.org/wiki/Extension:MobileFrontend) when they are installed.
 * Wiki copyright notice is displayed in the footer of every page as with WikiMedia-maintained skins.
-* Numerous bug fixes to stylesheets, JavaScript, and php HTML generation.
+* Numerous bug fixes to stylesheets, JavaScript, and PHP HTML generation.
 
 This fork is maintained by James Haley. I do not offer support for this
 software beyond basic installation help, however. Please do not contact
 me requesting any customizations for your particular site. Bug reports
-are however very much welcome, as are generic feature requests that 
+are however very much welcome, as are generic feature requests that
 would be useful to everyone that might use it.
 
 Installation
@@ -52,13 +52,13 @@ Additionally you can install the ContentRightSidebar extension using:
 
 `require_once("$IP/skins/monaco/ContentRightSidebar.php");`
 
-Doing so will provide you with a `<right-sidebar>...</right-sidebar>` tag which 
-will create right floated content in the page that will be moved into the right
+Doing so will provide you with a `<right-sidebar>...</right-sidebar>` tag which
+will create right-floated content in the page that will be moved into the right
 sidebar in monaco based skins. You can also use it with the args:
 
 `<right-sidebar with-box="true" title="My Title">...</right-sidebar>`
 
-to include that sidebar in a sidebar box. Note that a value is required for 
+to include that sidebar in a sidebar box. Note that a value is required for
 the `with-box` attribute when this extension is used with MediaWiki 1.25 or
 later. For consistency, it is suggested that you provide this value anyway,
 since it also works with earlier versions of MediaWiki.

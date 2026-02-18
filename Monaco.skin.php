@@ -31,9 +31,18 @@ class SkinMonaco extends SkinTemplate {
 	function diggsLink() {}
 	function deliciousLink() {}
 
+	/**
+	 * @var Config
+	 */
+	private $monacoConfig;
+
 	/** Using monaco. */
 	var $skinname = 'monaco', $stylename = 'monaco',
 		$template = 'MonacoTemplate', $useHeadElement = true;
+
+	public function __construct() {
+		$this->monacoConfig = \MediaWiki\MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'monaco' );
+	}
 
 	/**
 	 * @author Inez Korczynski <inez@wikia.com>
@@ -90,11 +99,11 @@ class SkinMonaco extends SkinTemplate {
 			$out->addStyle( 'monaco/style/css/masthead.css', 'screen' );
 		}
 		
-		$theme = $wgMonacoTheme;
-		if ( $wgMonacoAllowUsetheme ) {
+		$theme = $this->monacoConfig->get( 'MonacoTheme' );
+		if ( $this->monacoConfig->get( 'MonacoAllowusetheme' ) ) {
 			$theme = $wgRequest->getText('usetheme', $theme);
 			if ( preg_match('/[^a-z]/', $theme) ) {
-				$theme = $wgMonacoTheme;
+				$theme = $this->monacoConfig->get( 'MonacoTheme' );
 			}
 		}
 		if ( preg_match('/[^a-z]/', $theme) ) {

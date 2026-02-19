@@ -60,7 +60,7 @@ class SkinMonaco extends SkinTemplate {
 
 		// Load the bulk of our scripts with the MediaWiki 1.17+ resource loader
 		$out->addModuleScripts('skins.monaco');
-		
+
 		$out->addScript(
 			'<!--[if IE]><script type="' . htmlspecialchars($wgJsMimeType) .
 				'">\'abbr article aside audio canvas details figcaption figure ' .
@@ -77,25 +77,25 @@ class SkinMonaco extends SkinTemplate {
 	 *
 	 * @param $out OutputPage
 	 */
-	function setupSkinUserCss( OutputPage $out ){
+	function setupSkinUserCss( OutputPage $out ) {
 		global $wgMonacoTheme, $wgMonacoAllowUsetheme, $wgRequest, $wgResourceModules;
 
 		parent::setupSkinUserCss( $out );
-		
+
 		// Load the bulk of our styles with the MediaWiki 1.17+ resource loader
 		$out->addModuleStyles(array('skins.monaco', 'mediawiki.skinning.content', 'mediawiki.skinning.content.externallinks'));
-		
+
 		// ResourceLoader doesn't do ie specific styles that well iirc, so we have
 		// to do those manually.
 		$out->addStyle( 'monaco/style/css/monaco_ie8.css', 'screen', 'IE 8' );
 		$out->addStyle( 'monaco/style/css/monaco_gteie8.css', 'screen', 'gte IE 8');
-		
+
 		// Likewise the masthead is a conditional feature so it's hard to include
 		// inside of the ResourceLoader.
 		if ( $this->showMasthead() ) {
 			$out->addStyle( 'monaco/style/css/masthead.css', 'screen' );
 		}
-		
+
 		$theme = $this->monacoConfig->get( 'MonacoTheme' );
 		if ( $this->monacoConfig->get( 'MonacoAllowusetheme' ) ) {
 			$theme = $wgRequest->getText('usetheme', $theme);
@@ -106,11 +106,11 @@ class SkinMonaco extends SkinTemplate {
 		if ( preg_match('/[^a-z]/', $theme) ) {
 			$theme = "sapphire";
 		}
-		
+
 		// Theme is another conditional feature, we can't really resource load this
 		if ( isset($theme) && is_string($theme) && $theme != "sapphire" )
 			$out->addStyle( "monaco/style/{$theme}/css/main.css", 'screen' );
-		
+
 		// TODO: explicit RTL style sheets are supposed to be obsolete w/ResourceLoader
 		// I have no way to test this currently, however. -haleyjd
 		// rtl... hmm, how do we resource load this?
@@ -124,7 +124,7 @@ class SkinMonaco extends SkinTemplate {
 		}
 		return !!$this->getMastheadUser();
 	}
-	
+
 	function getMastheadUser() {
 		global $wgTitle;
 		if ( !isset($this->mMastheadUser) ) {
@@ -139,7 +139,7 @@ class SkinMonaco extends SkinTemplate {
 		}
 		return $this->mMastheadUser;
 	}
-	
+
 	function isMastheadTitleVisible() {
 		if ( !$this->showMasthead() ) {
 			return true;
@@ -151,7 +151,7 @@ class SkinMonaco extends SkinTemplate {
 	/**
 	 * @author Inez Korczynski <inez@wikia.com>
 	 * @author Christian Williams
- 	 * @author Daniel Friesen <http://daniel.friesen.name/>
+	 * @author Daniel Friesen <http://daniel.friesen.name/>
 	 * Added this functionality to MediaWiki, may need to add a patch to MW 1.16 and older
 	 * This allows the skin to add body attributes while still integrating with
 	 * MediaWiki's new headelement code. I modified the original Monaco code to
@@ -161,16 +161,16 @@ class SkinMonaco extends SkinTemplate {
 	 */
 	function addToBodyAttributes( $out, &$bodyAttrs ) {
 		global $wgRequest;
-		
+
 		$bodyAttrs['class'] .= ' color2';
-		
+
 		$action = $wgRequest->getVal('action');
 		if (in_array($action, array('edit', 'history', 'diff', 'delete', 'protect', 'unprotect', 'submit'))) {
 			$bodyAttrs['class'] .= ' action_' . $action;
 		} else if (empty($action) || in_array($action, array('view', 'purge'))) {
 			$bodyAttrs['class'] .= ' action_view';
 		}
-		
+
 		if ( $this->showMasthead() ) {
 			if ( $this->isMastheadTitleVisible() ) {
 				$bodyAttrs['class'] .= ' masthead-special';
@@ -178,7 +178,7 @@ class SkinMonaco extends SkinTemplate {
 				$bodyAttrs['class'] .= ' masthead-regular';
 			}
 		}
-		
+
 		$bodyAttrs['id'] = "body";
 	}
 
@@ -315,11 +315,11 @@ class SkinMonaco extends SkinTemplate {
 	private function addExtraItemsToSidebarMenu(&$node, &$nodes) {
 
 		$extraWords = array(
-					'#voted#' => array('highest_ratings', 'GetTopVotedArticles'),
-					'#popular#' => array('most_popular', 'GetMostPopularArticles'),
-					'#visited#' => array('most_visited', 'GetMostVisitedArticles'),
-					'#newlychanged#' => array('newly_changed', 'GetNewlyChangedArticles'),
-					'#topusers#' => array('community', 'GetTopFiveUsers'));
+				'#voted#' => array('highest_ratings', 'GetTopVotedArticles'),
+				'#popular#' => array('most_popular', 'GetMostPopularArticles'),
+				'#visited#' => array('most_visited', 'GetMostVisitedArticles'),
+				'#newlychanged#' => array('newly_changed', 'GetNewlyChangedArticles'),
+				'#topusers#' => array('community', 'GetTopFiveUsers'));
 
 		if(isset($extraWords[strtolower($node['org'])])) {
 			if(substr($node['org'],0,1) == '#') {
@@ -437,22 +437,22 @@ class SkinMonaco extends SkinTemplate {
 					if ( isset($val["redundant"]) && $val["redundant"] ) {
 						continue;
 					}
-					
+
 					$kk = ( isset($val["id"]) && substr($val["id"], 0, 3) == "ca-" ) ? substr($val["id"], 3) : $key;
-					
+
 					$msgKey = $kk;
 					if ( $kk == "edit" ) {
 						$title = $this->getRelevantTitle();
 						$msgKey = $title->exists() || ( $title->getNamespace() == NS_MEDIAWIKI && !wfMessage($title->getText())->inContentLanguage()->isBlank() )
 							? "edit" : "create";
 					}
-					
+
 					// @note We know we're in 1.18 so we don't need to pass the second param to wfEmptyMsg anymore
 					$tabText = wfMessage("monaco-tab-$msgKey")->text();
 					if ( $tabText && $tabText != '-' && wfMessage("monaco-tab-$msgKey")->exists() ) {
 						$val["text"] = $tabText;
 					}
-					
+
 					switch($section) {
 					case "namespaces": $side = 'right'; break;
 					case "variants": $side = 'variants'; break;
@@ -462,7 +462,6 @@ class SkinMonaco extends SkinTemplate {
 				}
 			}
 		} else {
-			
 			// rarely ever happens, but it does
 			if ( empty( $tpl->data['content_actions'] ) ) {
 				return $links;
@@ -506,7 +505,7 @@ class SkinMonaco extends SkinTemplate {
 				}
 			}
 		}
-		
+
 		return $links;
 	}
 
@@ -544,9 +543,7 @@ class SkinMonaco extends SkinTemplate {
 				'text' => wfMessage('pt-createaccount')->text(),
 				'href' => $signUpHref . "&type=signup"
 				);
-
 		} else {
-
 			$data['userpage'] = array(
 				'text' => $wgUser->getName(),
 				'href' => $tpl->data['personal_urls']['userpage']['href']
@@ -562,17 +559,16 @@ class SkinMonaco extends SkinTemplate {
 					/*'text' => $tpl->data['personal_urls']['watchlist']['text'],*/
 					'text' => wfMessage('prefs-watchlist')->text(),
 					'href' => $tpl->data['personal_urls']['watchlist']['href']
-					);
+				);
 			}
 
 			// In some cases, logout will be removed explicitly (such as when it is replaced by fblogout).
-			if(isset($tpl->data['personal_urls']['logout'])){
+			if(isset($tpl->data['personal_urls']['logout'])) {
 				$data['logout'] = array(
 					'text' => $tpl->data['personal_urls']['logout']['text'],
 					'href' => $tpl->data['personal_urls']['logout']['href']
 				);
 			}
-
 
 			$data['more']['userpage'] = array(
 				'text' => wfMessage('mypage')->text(),
@@ -583,7 +579,7 @@ class SkinMonaco extends SkinTemplate {
 				$data['more']['userprofile'] = array(
 					'text' => $tpl->data['personal_urls']['userprofile']['text'],
 					'href' => $tpl->data['personal_urls']['userprofile']['href']
-					);
+				);
 			}
 
 			$data['more']['mycontris'] = array(
@@ -601,9 +597,9 @@ class SkinMonaco extends SkinTemplate {
 		// loops lets it expect anything starting with "fb*" (because we need that for facebook connect).
 		// Perhaps we should have some system to let PersonalUrls hook work again on its own?
 		// - Sean Colombo
-		
-		foreach($tpl->data['personal_urls'] as $urlName => $urlData){
-			if(strpos($urlName, "fb") === 0){
+
+		foreach($tpl->data['personal_urls'] as $urlName => $urlData) {
+			if(strpos($urlName, "fb") === 0) {
 				$data[$urlName] = $urlData;
 			}
 		}
@@ -622,14 +618,14 @@ class MonacoTemplate extends BaseTemplate {
 	 */
 	static function getReturntoParam($customReturnto = null) {
 		global $wgTitle, $wgRequest;
-		
+
 		if ($customReturnto) {
 			$returnto = "returnto=$customReturnto";
 		} else {
 			$thisurl = $wgTitle->getPrefixedURL();
 			$returnto = "returnto=$thisurl";
 		}
-		
+
 		if (!$wgRequest->wasPosted()) {
 			$query = $wgRequest->getValues();
 			unset($query['title']);
@@ -654,7 +650,7 @@ class MonacoTemplate extends BaseTemplate {
 	/**
 	 * Make this a method so that subskins can override this if they reorganize
 	 * the user header and need the more button to function.
-	 * 
+	 *
 	 * @author Daniel Friesen
 	 */
 	function useUserMore() {
@@ -674,30 +670,26 @@ class MonacoTemplate extends BaseTemplate {
 
 		// Suppress warnings to prevent notices about missing indexes in $this->data
 		wfSuppressWarnings();
-		
+
 		$this->setupRightSidebar();
 		ob_start();
 		wfRunHooks('MonacoRightSidebar', array($this));
 		$this->addToRightSidebar( ob_get_contents() );
 		ob_end_clean();
-		
+
 		$this->html( 'headelement' );
 
+		$this->printAdditionalHead(); // @fixme not valid
 
-	$this->printAdditionalHead(); // @fixme not valid
+		// this hook allows adding extra HTML just after <body> opening tag
+		// append your content to $html variable instead of echoing
+		$html = '';
+		wfRunHooks('GetHTMLAfterBody', array ($this, &$html));
+		echo $html;
 ?>
-
-<?php
-
-	// this hook allows adding extra HTML just after <body> opening tag
-	// append your content to $html variable instead of echoing
-	$html = '';
-	wfRunHooks('GetHTMLAfterBody', array ($this, &$html));
-	echo $html;
-?>
-<div id="skiplinks"> 
-	<a class="skiplink" href="#article" tabIndex=1>Skip to Content</a> 
-	<a class="skiplink wikinav" href="#widget_sidebar" tabIndex=1>Skip to Navigation</a> 
+<div id="skiplinks">
+	<a class="skiplink" href="#article" tabIndex=1>Skip to Content</a>
+	<a class="skiplink wikinav" href="#widget_sidebar" tabIndex=1>Skip to Navigation</a>
 </div>
 
 	<div id="background_accent1"></div>
@@ -864,13 +856,13 @@ if ($custom_article_footer !== '') {
 							</ul>
 						</td>
 						<td class="col2">
-<?php            
+<?php
 		if(!empty($this->data['content_actions']['history']) || !empty($nav_urls['recentchangeslinked']))
 		{
 ?>
-							<ul id="articleFooterActions3" class="actions clearfix"> 
+							<ul id="articleFooterActions3" class="actions clearfix">
 <?php
-			if(!empty($this->data['content_actions']['history'])) 
+			if(!empty($this->data['content_actions']['history']))
 			{
 				$feHistoryIcon = $this->blankimg(array("id" => "fe_history_img", "class" => "sprite history", "alt" => ""));
 				$feHistoryIcon = Html::rawElement("a", array("id" => "fe_history_icon", "href" => $this->data['content_actions']['history']['href']), $feHistoryIcon);
@@ -897,7 +889,7 @@ if ($custom_article_footer !== '') {
 ?>
 							<ul id="articleFooterActions4" class="actions clearfix">
 <?php
-			if(!empty($nav_urls['permalink'])) 
+			if(!empty($nav_urls['permalink']))
 			{
 				$fePermaIcon = $this->blankimg(array("id" => "fe_permalink_img", "class" => "sprite move", "alt" => ""));
 				$fePermaIcon = Html::rawElement("a", array("id" => "fe_permalink_icon", "href" => $nav_urls['permalink']['href']), $fePermaIcon);
@@ -906,7 +898,7 @@ if ($custom_article_footer !== '') {
 								<li id="fe_permalink"><?php echo $fePermaIcon ?> <div><?php echo $fePermaLink ?></div></li>
 <?php
 			}
-			if(!empty($nav_urls['whatlinkshere'])) 
+			if(!empty($nav_urls['whatlinkshere']))
 			{
 				$feWhatIcon = $this->blankimg(array("id" => "fe_whatlinkshere_img", "class" => "sprite pagelink", "alt" => ""));
 				$feWhatIcon = Html::rawElement("a", array("id" => "fe_whatlinkshere_icon", "rel" => "nofollow", "href" => $nav_urls['whatlinkshere']['href']), $feWhatIcon);
@@ -1004,7 +996,7 @@ if ($custom_article_footer !== '') {
 
 	if ( $showDynamicLinks ) {
 		$dynamicLinksInternal = array();
-		
+
 		global $wgMonacoDynamicCreateOverride;
 		$createPage = null;
 		if(!wfMessage('dynamic-links-write-article-url')->isDisabled()) {
@@ -1040,11 +1032,11 @@ if ($custom_article_footer !== '') {
 				'icon' => 'photo',
 			);
 		}
-		
+
 		$this->extendDynamicLinks( $dynamicLinksInternal );
 		wfRunHooks( 'MonacoDynamicLinks', array( $this, &$dynamicLinksInternal ) );
 		$this->extendDynamicLinksAfterHook( $dynamicLinksInternal );
-		
+
 		$dynamicLinksUser = array();
 		foreach ( explode( "\n", wfMessage('dynamic-links')->inContentLanguage()->text() ) as $line ) {
 			if ( !$line || $line[0] == ' ' )
@@ -1060,7 +1052,7 @@ if ($custom_article_footer !== '') {
 				}
 			}
 		}
-		
+
 		foreach ( $dynamicLinksUser as $key => $value )
 			$dynamicLinksArray[$key] = $value;
 		foreach ( $dynamicLinksInternal as $key => $value )
@@ -1246,7 +1238,7 @@ $this->html('reporttime');
 
 	// allow subskins to add extra sidebar extras
 	function printExtraSidebar() {}
-	
+
 	function sidebarBox( $bar, $cont, $options=array() ) {
 		$titleClass = "sidebox_title";
 		$contentClass = "sidebox_contents";
@@ -1254,7 +1246,7 @@ $this->html('reporttime');
 			$titleClass .= " widget_contents";
 			$contentClass .= " widget_title";
 		}
-		
+
 		$attrs = array( "class" => "widget sidebox" );
 		if ( isset($options["id"]) ) {
 			$attrs["id"] = $options["id"];
@@ -1262,7 +1254,7 @@ $this->html('reporttime');
 		if ( isset($options["class"]) ) {
 			$attrs["class"] .= " {$options["class"]}";
 		}
-		
+
 		$box = "			";
 		$box .= Html::openElement( 'div', $attrs );
 		$box .= "\n";
@@ -1289,26 +1281,26 @@ $this->html('reporttime');
 		$box .= Xml::closeElement( 'div ');
 		echo $box;
 	}
-	
+
 	function customBox( $bar, $cont ) {
 		$this->sidebarBox( $bar, $cont );
 	}
-	
+
 	// hook for subskins
 	function setupRightSidebar() {}
-	
+
 	function addToRightSidebar($html) {
 		$this->mRightSidebar .= $html;
 	}
-	
+
 	function hasRightSidebar() {
 		return (bool)trim($this->mRightSidebar);
 	}
-	
+
 	// Hook for things that you only want in the sidebar if there are already things
 	// inside the sidebar.
 	function lateRightSidebar() {}
-	
+
 	function printRightSidebar() {
 		if ( $this->hasRightSidebar() ) {
 ?>
@@ -1322,13 +1314,13 @@ $this->html('reporttime');
 <?php
 		}
 	}
-	
+
 	function printMonacoBranding() {
 		ob_start();
 		wfRunHooks( 'MonacoBranding', array( $this ) );
 		$branding = ob_get_contents();
 		ob_end_clean();
-		
+
 		if ( trim($branding) ) { ?>
 			<div id="monacoBranding">
 <?php echo $branding; ?>
@@ -1336,39 +1328,39 @@ $this->html('reporttime');
 <?php
 		}
 	}
-	
+
 	function printUserData() {
 		$skin = $this->data['skin'];
 		?>
 			<div id="userData">
 <?php
-		
+
 		$custom_user_data = "";
-		if( !wfRunHooks( 'CustomUserData', array( &$this, &$tpl, &$custom_user_data ) ) ){
+		if( !wfRunHooks( 'CustomUserData', array( &$this, &$tpl, &$custom_user_data ) ) ) {
 			wfDebug( __METHOD__ . ": CustomUserData messed up skin!\n" );
 		}
-		
+
 		if( $custom_user_data ) {
 			echo $custom_user_data;
 		} else {
 			global $wgUser;
-			
+
 			// Output the facebook connect links that were added with PersonalUrls.
 			// @author Sean Colombo
-			foreach($this->data['userlinks'] as $linkName => $linkData){
-				// 
-				if( !empty($linkData['html']) ){
-					echo $linkData['html']; 
+			foreach($this->data['userlinks'] as $linkName => $linkData) {
+				//
+				if( !empty($linkData['html']) ) {
+					echo $linkData['html'];
 				}
 			}
-			
+
 			if ($wgUser->isLoggedIn()) {
 				// haleyjd 20140420: This needs to use $key => $value syntax to get the proper style for the elements!
 				foreach( array( "username" => "userpage", "mytalk" => "mytalk", "watchlist" => "watchlist" ) as $key => $value ) {
 					echo "				" . Html::rawElement( 'span', array( 'id' => "header_$key" ),
 						Html::element( 'a', array( 'href' => $this->data['userlinks'][$value]['href'] ) + Linker::tooltipAndAccesskeyAttribs("pt-$value"), $this->data['userlinks'][$value]['text'] ) ) . "\n";
 				}
-				
+
 			?>
 <?php
 				if ( $this->useUserMore() ) { ?>
@@ -1415,7 +1407,7 @@ $this->html('reporttime');
 			</div>
 <?php
 	}
-	
+
 	// allow subskins to add pre-page islands
 	function printBeforePage() {}
 
@@ -1425,7 +1417,7 @@ $this->html('reporttime');
 
 	// Made a separate method so recipes, answers, etc can override. This is for any additional CSS, Javacript, etc HTML
 	// that appears within the HEAD tag
-	function printAdditionalHead(){}
+	function printAdditionalHead() {}
 
 	function printMasthead() {
 		$skin = $this->data['skin'];
@@ -1464,11 +1456,11 @@ $this->html('reporttime');
 	}
 
 	// Made a separate method so recipes, answers, etc can override. Notably, answers turns it off.
-	function printPageBar(){
+	function printPageBar() {
 		// Allow for other skins to conditionally include it
 		$this->realPrintPageBar();
 	}
-	function realPrintPageBar(){
+	function realPrintPageBar() {
 		foreach ( $this->data['articlelinks'] as $side => $links ) {
 			foreach ( $links as $key => $link ) {
 				$this->data['articlelinks'][$side][$key]["id"] = "ca-$key";
@@ -1477,7 +1469,7 @@ $this->html('reporttime');
 				}
 			}
 		}
-		
+
 		$bar = array();
 		if ( isset($this->data['articlelinks']['right']) ) {
 			$bar[] = array(
@@ -1519,16 +1511,16 @@ $this->html('reporttime');
 		global $wgMonacoCompactSpecialPages;
 		$isPrimary = !$this->primaryPageBarPrinted;
 		$this->primaryPageBarPrinted = true;
-		
+
 		$count = 0;
 		foreach( $bar as $list ) {
 			$count += count($list['links']);
 		}
 		$useCompactBar = $wgMonacoCompactSpecialPages && $count == 1;
 		$deferredList = null;
-		
+
 		$divClass = "reset color1 page_bar clearfix";
-		
+
 		foreach( $bar as $i => $list ) {
 			if ( $useCompactBar && $list["id"] == "page_tabs" && !empty($list["links"]) && isset($list["links"]['nstab-special']) ) {
 				$deferredList = $list;
@@ -1538,7 +1530,7 @@ $this->html('reporttime');
 				break;
 			}
 		}
-		
+
 		echo "		";
 		echo Html::openElement( 'div', array( "id" => $isPrimary ? "page_bar" : null, "class" => $divClass ) );
 		echo "\n";
@@ -1565,10 +1557,10 @@ $this->html('reporttime');
 		if ( isset($list["class"]) && $list["class"] ) {
 			$attrs["class"] .= " {$list["class"]}";
 		}
-		
+
 		$this->printCustomPageBarListLinks( $list["links"], $attrs, "			", $list["bad_hook"] );
 	}
-	
+
 	function printCustomPageBarListLinks( $links, $attrs=array(), $indent='', $hook=null ) {
 		echo $indent;
 		echo Html::openElement( 'ul', $attrs );
@@ -1593,12 +1585,12 @@ $this->html('reporttime');
 				echo $this->blankimg( array( "class" => "sprite {$link["icon"]}", "alt" => "" ) );
 			}
 			echo Html::element( 'a', $aAttrs, $link["text"] );
-			
+
 			if ( isset($link["links"]) ) {
 				echo $this->blankimg();
 				$this->printCustomPageBarListLinks( $link["links"], array(), "$indent	" );
 			}
-			
+
 			echo Xml::closeElement( 'li' );
 			echo "\n";
 		}
@@ -1609,7 +1601,7 @@ $this->html('reporttime');
 	}
 
 	// Made a separate method so recipes, answers, etc can override. Notably, answers turns it off.
-	function printFirstHeading(){
+	function printFirstHeading() {
 		if ( !$this->data['skin']->isMastheadTitleVisible() ) {
 			return;
 		}
@@ -1619,16 +1611,15 @@ $this->html('reporttime');
 	}
 
 	// Made a separate method so recipes, answers, etc can override.
-	function printContent(){
+	function printContent() {
 		$this->html('bodytext');
 	}
 
 	// Made a separate method so recipes, answers, etc can override.
-	function printCategories(){
+	function printCategories() {
 		// Display categories
 		if($this->data['catlinks']) {
 			$this->html('catlinks');
 		}
 	}
-
 }

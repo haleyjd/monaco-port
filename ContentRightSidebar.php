@@ -56,7 +56,7 @@ class MonacoContentRightSidebar
   /**
    * Register parser extensions
    */
-  public static function ContentRightSidebarRegisterParser(&$parser) 
+  public static function ContentRightSidebarRegisterParser(&$parser)
   {
     $parser->setHook('right-sidebar', 'MonacoContentRightSidebar::ContentRightSidebarTag');
     return true;
@@ -65,11 +65,11 @@ class MonacoContentRightSidebar
   /**
    * Parser extension callback
    */
-  public static function ContentRightSidebarTag($input, $arg, $parser, $frame) 
+  public static function ContentRightSidebarTag($input, $arg, $parser, $frame)
   {
     $isContentTagged = false;
     $m = array();
-    if(preg_match( '#^(.*)<content>(.*?)</content>(.*)$#is', $input, $m)) 
+    if(preg_match( '#^(.*)<content>(.*?)</content>(.*)$#is', $input, $m))
     {
       $isContentTagged = true;
 
@@ -103,7 +103,7 @@ class MonacoContentRightSidebar
     if($isContentTagged)
     {
       $out .= $input;
-    } 
+    }
     else
     {
       $out .= '<div style="float: right; clear: right; position: relative;">';
@@ -122,7 +122,7 @@ class MonacoContentRightSidebar
   {
     $boxes = array();
 
-    while(true) 
+    while(true)
     {
       $withBox = false;
       $title = '';
@@ -175,8 +175,8 @@ class MonacoContentRightSidebar
   }
 
   /**
-   * MonacoRightSidebar custom hook handler. This is invoked by the Monaco skin 
-   * to add the right sidebar. If this hook is not invoked, then right sidebar 
+   * MonacoRightSidebar custom hook handler. This is invoked by the Monaco skin
+   * to add the right sidebar. If this hook is not invoked, then right sidebar
    * content renders as a right-floating box inside the article.
    */
   public static function ContentRightSidebarMonacoRightSidebar( $sk )
@@ -194,7 +194,7 @@ class MonacoContentRightSidebar
         }
         $sk->sidebarBox($box["title"], $box["content"], $attrs);
       }
-      else 
+      else
       {
         echo $box["content"];
       }
@@ -206,6 +206,6 @@ class MonacoContentRightSidebar
 
 // Register hooks
 $wgHooks['BeforePageDisplay'  ][] = 'MonacoContentRightSidebar::BeforePageDisplay';
-$wgHooks['ParserFirstCallInit'][] = 'MonacoContentRightSidebar::ContentRightSidebarRegisterParser'; 
+$wgHooks['ParserFirstCallInit'][] = 'MonacoContentRightSidebar::ContentRightSidebarRegisterParser';
 $wgHooks['MonacoRightSidebar' ][] = 'MonacoContentRightSidebar::ContentRightSidebarMonacoRightSidebar';
 

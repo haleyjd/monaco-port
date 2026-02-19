@@ -93,14 +93,14 @@ class MonacoSidebar {
 	 * @return array
 	 */
 	public static function getMessageAsArray($messageKey) {
-        $message = trim(wfMessage($messageKey)->inContentLanguage()->text());
-        if(!wfMessage($messageKey)->inContentLanguage()->isBlank()) {
-                $lines = explode("\n", $message);
-                if(count($lines) > 0) {
-                        return $lines;
-                }
-        }
-        return null;
+		$message = trim(wfMessage($messageKey)->inContentLanguage()->text());
+		if(!wfMessage($messageKey)->inContentLanguage()->isBlank()) {
+			$lines = explode("\n", $message);
+			if(count($lines) > 0) {
+				return $lines;
+			}
+		}
+		return null;
 	}
 
 	public function getCode() {
@@ -132,7 +132,7 @@ class MonacoSidebar {
 	}
 
 	public function getUserLines() {
-		global $wgUser,  $wgParser, $wgMessageCache;
+		global $wgUser, $wgParser, $wgMessageCache;
 		$revision = Revision::newFromTitle(Title::newFromText('User:'.$wgUser->getName().'/Monaco-sidebar'));
 		if(is_object($revision)) {
 			// replace $revision->getText(), removed in MW 1.29
@@ -168,7 +168,7 @@ class MonacoSidebar {
 			if ( !empty( $nodes[$val]['children'] ) ) {
 				$link_html .= '<em>&rsaquo;</em>';
 			}
-			
+
 			$menu_item =
 				Html::rawElement( 'a', array(
 						'href' => !empty($nodes[$val]['href']) ? $nodes[$val]['href'] : '#',
@@ -192,9 +192,8 @@ class MonacoSidebar {
 		$nodes = $this->parse($lines);
 
 		if(count($nodes) > 0) {
-			
 			wfRunHooks('MonacoSidebarGetMenu', array(&$nodes));
-			
+
 			$mainMenu = array();
 			foreach($nodes[0]['children'] as $key => $val) {
 				if(isset($nodes[$val]['children'])) {
@@ -223,7 +222,7 @@ class MonacoSidebar {
 				$menu .= '</li>';
 				if(isset($nodes[$val]['href']) && $nodes[$val]['href'] == 'editthispage') $menu .= '<!--e-->';
 			}
-			
+
 			$classes = array();
 			if ( $userMenu )
 				$classes[] = 'userMenu';
@@ -432,4 +431,3 @@ class MonacoSidebar {
 	}
 */
 }
-

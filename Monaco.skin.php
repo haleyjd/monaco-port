@@ -10,7 +10,7 @@
  * @author Daniel Friesen
  * @author James Haley
  */
-if(!defined('MEDIAWIKI')) {
+if (!defined('MEDIAWIKI')) {
 	die(-1);
 }
 
@@ -193,50 +193,50 @@ class SkinMonaco extends SkinTemplate {
 
 		wfDebugLog('monaco', sprintf('Cache: %s, wgLang: %s, wgContLang %s', (int) $cache, $wgLang->getCode(), $wgContLang->getCode()));
 
-		if($cache) {
+		if ($cache) {
 			$key = wfMemcKey('MonacoDataOld');
 			$data_array = $parserMemc->get($key);
 		}
 
-		if(empty($data_array)) {
+		if (empty($data_array)) {
 			wfDebugLog('monaco', 'There is no cached $data_array, let\'s populate');
 			$data_array['toolboxlinks'] = $this->getToolboxLinks();
-			if($cache) {
+			if ($cache) {
 				$parserMemc->set($key, $data_array, 4 * 60 * 60 /* 4 hours */);
 			}
 		}
 
-		if($wgUser->isLoggedIn()) {
-			if(empty($wgUser->mMonacoData) || ($wgTitle->getNamespace() == NS_USER && $wgRequest->getText('action') == 'delete')) {
+		if ($wgUser->isLoggedIn()) {
+			if (empty($wgUser->mMonacoData) || ($wgTitle->getNamespace() == NS_USER && $wgRequest->getText('action') == 'delete')) {
 
 				wfDebugLog('monaco', 'mMonacoData for user is empty');
 
 				$wgUser->mMonacoData = array();
 
 				$text = $this->getTransformedArticle('User:'.$wgUser->getName().'/Monaco-toolbox', true);
-				if(empty($text)) {
+				if (empty($text)) {
 					$wgUser->mMonacoData['toolboxlinks'] = false;
 				} else {
 					$wgUser->mMonacoData['toolboxlinks'] = $this->parseToolboxLinks($text);
 				}
 			}
 
-			if($wgUser->mMonacoData['toolboxlinks'] !== false && is_array($wgUser->mMonacoData['toolboxlinks'])) {
+			if ($wgUser->mMonacoData['toolboxlinks'] !== false && is_array($wgUser->mMonacoData['toolboxlinks'])) {
 				wfDebugLog('monaco', 'There is user data for toolboxlinks');
 				$data_array['toolboxlinks'] = $wgUser->mMonacoData['toolboxlinks'];
 			}
 		}
 
-		foreach($data_array['toolboxlinks'] as $key => $val) {
-			if(isset($val['org']) && $val['org'] == 'whatlinkshere') {
-				if(isset($tpl->data['nav_urls']['whatlinkshere'])) {
+		foreach ($data_array['toolboxlinks'] as $key => $val) {
+			if (isset($val['org']) && $val['org'] == 'whatlinkshere') {
+				if (isset($tpl->data['nav_urls']['whatlinkshere'])) {
 					$data_array['toolboxlinks'][$key]['href'] = $tpl->data['nav_urls']['whatlinkshere']['href'];
 				} else {
 					unset($data_array['toolboxlinks'][$key]);
 				}
 			}
-			if(isset($val['org']) && $val['org'] == 'permalink') {
-				if(isset($tpl->data['nav_urls']['permalink'])) {
+			if (isset($val['org']) && $val['org'] == 'permalink') {
+				if (isset($tpl->data['nav_urls']['permalink'])) {
 					$data_array['toolboxlinks'][$key]['href'] = $tpl->data['nav_urls']['permalink']['href'];
 				} else {
 					unset($data_array['toolboxlinks'][$key]);
@@ -260,8 +260,8 @@ class SkinMonaco extends SkinTemplate {
 	 */
 	private function parseToolboxLinks($lines) {
 		$nodes = array();
-		if(is_array($lines)) {
-			foreach($lines as $line) {
+		if (is_array($lines)) {
+			foreach ($lines as $line) {
 				$trimmed = trim($line, ' *');
 				if (strlen($trimmed) == 0) { # ignore empty lines
 					continue;
@@ -279,20 +279,20 @@ class SkinMonaco extends SkinTemplate {
 	 */
 	private function getLines($message_key) {
 		$revision = Revision::newFromTitle(Title::newFromText($message_key, NS_MEDIAWIKI));
-		if(is_object($revision)) {
+		if (is_object($revision)) {
 			// replace $revision->getText(), removed in MW 1.29
 			$content = $revision->getContent();
 			$text = ContentHandler::getContentText($content);
-			if(trim($text) != '') {
+			if (trim($text) != '') {
 				$temp = MonacoSidebar::getMessageAsArray($message_key);
-				if(count($temp) > 0) {
+				if (count($temp) > 0) {
 					wfDebugLog('monaco', sprintf('Get LOCAL %s, which contains %s lines', $message_key, count($temp)));
 					$lines = $temp;
 				}
 			}
 		}
 
-		if(empty($lines)) {
+		if (empty($lines)) {
 			$lines = MonacoSidebar::getMessageAsArray($message_key);
 			wfDebugLog('monaco', sprintf('Get %s, which contains %s lines', $message_key, count($lines)));
 		}
@@ -321,9 +321,9 @@ class SkinMonaco extends SkinTemplate {
 				'#newlychanged#' => array('newly_changed', 'GetNewlyChangedArticles'),
 				'#topusers#' => array('community', 'GetTopFiveUsers'));
 
-		if(isset($extraWords[strtolower($node['org'])])) {
-			if(substr($node['org'],0,1) == '#') {
-				if(strtolower($node['org']) == strtolower($node['text'])) {
+		if (isset($extraWords[strtolower($node['org'])])) {
+			if (substr($node['org'],0,1) == '#') {
+				if (strtolower($node['org']) == strtolower($node['text'])) {
 					$node['text'] = wfMessage(trim(strtolower($node['org']), ' *'))->text();
 				}
 				$node['magic'] = true;
@@ -331,16 +331,16 @@ class SkinMonaco extends SkinTemplate {
 			$results = DataProvider::$extraWords[strtolower($node['org'])][1]();
 			$results[] = array('url' => SpecialPage::getTitleFor('Top/'.$extraWords[strtolower($node['org'])][0])->getLocalURL(), 'text' => strtolower(wfMessage('moredotdotdot')->text()), 'class' => 'Monaco-sidebar_more');
 			global $wgUser;
-			if( $wgUser->isAllowed( 'editinterface' ) ) {
-				if(strtolower($node['org']) == '#popular#') {
+			if ( $wgUser->isAllowed( 'editinterface' ) ) {
+				if (strtolower($node['org']) == '#popular#') {
 					$results[] = array('url' => Title::makeTitle(NS_MEDIAWIKI, 'Most popular articles')->getLocalUrl(), 'text' => wfMessage('monaco-edit-this-menu')->text(), 'class' => 'Monaco-sidebar_edit');
 				}
 			}
-			foreach($results as $key => $val) {
+			foreach ($results as $key => $val) {
 				$node['children'][] = $this->lastExtraIndex;
 				$nodes[$this->lastExtraIndex]['text'] = $val['text'];
 				$nodes[$this->lastExtraIndex]['href'] = $val['url'];
-				if(!empty($val['class'])) {
+				if (!empty($val['class'])) {
 					$nodes[$this->lastExtraIndex]['class'] = $val['class'];
 				}
 				$this->lastExtraIndex++;
@@ -356,30 +356,30 @@ class SkinMonaco extends SkinTemplate {
 		$nodes[] = array();
 		$lastDepth = 0;
 		$i = 0;
-		if(is_array($lines)) {
-			foreach($lines as $line) {
+		if (is_array($lines)) {
+			foreach ($lines as $line) {
 				if (strlen($line) == 0) { # ignore empty lines
 					continue;
 				}
 				$node = MonacoSidebar::parseItem($line);
 				$node['depth'] = strrpos($line, '*') + 1;
-				if($node['depth'] == $lastDepth) {
+				if ($node['depth'] == $lastDepth) {
 					$node['parentIndex'] = $nodes[$i]['parentIndex'];
 				} else if ($node['depth'] == $lastDepth + 1) {
 					$node['parentIndex'] = $i;
 				} else {
-					for($x = $i; $x >= 0; $x--) {
-						if($x == 0) {
+					for ($x = $i; $x >= 0; $x--) {
+						if ($x == 0) {
 							$node['parentIndex'] = 0;
 							break;
 						}
-						if($nodes[$x]['depth'] == $node['depth'] - 1) {
+						if ($nodes[$x]['depth'] == $node['depth'] - 1) {
 							$node['parentIndex'] = $x;
 							break;
 						}
 					}
 				}
-				if(substr($node['org'],0,1) == '#') {
+				if (substr($node['org'],0,1) == '#') {
 					$this->addExtraItemsToSidebarMenu($node, $nodes);
 				}
 				$nodes[$i+1] = $node;
@@ -404,13 +404,13 @@ class SkinMonaco extends SkinTemplate {
 	private function getTransformedArticle($name, $asArray = false) {
 		global $wgParser, $wgMessageCache;
 		$revision = Revision::newFromTitle(Title::newFromText($name));
-		if(is_object($revision)) {
+		if (is_object($revision)) {
 			// replace $revision->getText(), removed in MW 1.29
 			$content = $revision->getContent();
 			$text = ContentHandler::getContentText($content);
-			if(!empty($text)) {
+			if (!empty($text)) {
 				$ret = $wgParser->transformMsg($text, $wgMessageCache->getParserOptions());
-				if($asArray) {
+				if ($asArray) {
 					$ret = explode("\n", $ret);
 				}
 				return $ret;
@@ -453,7 +453,7 @@ class SkinMonaco extends SkinTemplate {
 						$val["text"] = $tabText;
 					}
 
-					switch($section) {
+					switch ($section) {
 					case "namespaces": $side = 'right'; break;
 					case "variants": $side = 'variants'; break;
 					default: $side = 'left'; break;
@@ -469,7 +469,7 @@ class SkinMonaco extends SkinTemplate {
 
 			# @todo: might actually be useful to move this to a global var and handle this in extension files --TOR
 			$force_right = array( 'userprofile', 'talk', 'TheoryTab' );
-			foreach($tpl->data['content_actions'] as $key => $val) {
+			foreach ($tpl->data['content_actions'] as $key => $val) {
 				$msgKey = $key;
 				if ( $key == "edit" ) {
 					$msgKey = $this->mTitle->exists() || ( $this->mTitle->getNamespace() == NS_MEDIAWIKI && wfMessage($this->mTitle->getText())->exists() )
@@ -492,7 +492,7 @@ class SkinMonaco extends SkinTemplate {
 		if ( isset($links['left']) ) {
 			foreach ( $links['left'] as $key => &$v ) {
 				/* Fix icons */
-				if($key == 'unprotect') {
+				if ($key == 'unprotect') {
 					//unprotect uses the same icon as protect
 					$v['icon'] = 'protect';
 				} else if ($key == 'undelete') {
@@ -526,13 +526,13 @@ class SkinMonaco extends SkinTemplate {
 		if ( strval( $page ) !== '' ) {
 			$a['returnto'] = $page;
 			$query = $wgRequest->getVal( 'returntoquery', $this->thisquery );
-			if( $query != '' ) {
+			if ( $query != '' ) {
 				$a['returntoquery'] = $query;
 			}
 		}
 		$returnto = wfArrayToCGI( $a );
 
-		if(!$wgUser->isLoggedIn()) {
+		if (!$wgUser->isLoggedIn()) {
 			$signUpHref = Skin::makeSpecialUrl( 'UserLogin', $returnto );
 			$data['login'] = array(
 				'text' => wfMessage('login')->text(),
@@ -563,7 +563,7 @@ class SkinMonaco extends SkinTemplate {
 			}
 
 			// In some cases, logout will be removed explicitly (such as when it is replaced by fblogout).
-			if(isset($tpl->data['personal_urls']['logout'])) {
+			if (isset($tpl->data['personal_urls']['logout'])) {
 				$data['logout'] = array(
 					'text' => $tpl->data['personal_urls']['logout']['text'],
 					'href' => $tpl->data['personal_urls']['logout']['href']
@@ -575,7 +575,7 @@ class SkinMonaco extends SkinTemplate {
 				'href' => $tpl->data['personal_urls']['userpage']['href']
 				);
 
-			if(isset($tpl->data['personal_urls']['userprofile'])) {
+			if (isset($tpl->data['personal_urls']['userprofile'])) {
 				$data['more']['userprofile'] = array(
 					'text' => $tpl->data['personal_urls']['userprofile']['text'],
 					'href' => $tpl->data['personal_urls']['userprofile']['href']
@@ -598,8 +598,8 @@ class SkinMonaco extends SkinTemplate {
 		// Perhaps we should have some system to let PersonalUrls hook work again on its own?
 		// - Sean Colombo
 
-		foreach($tpl->data['personal_urls'] as $urlName => $urlData) {
-			if(strpos($urlName, "fb") === 0) {
+		foreach ($tpl->data['personal_urls'] as $urlName => $urlData) {
+			if (strpos($urlName, "fb") === 0) {
 				$data[$urlName] = $urlData;
 			}
 		}
@@ -632,7 +632,7 @@ class MonacoTemplate extends BaseTemplate {
 			unset($query['returnto']);
 			unset($query['returntoquery']);
 			$thisquery = wfUrlencode(wfArrayToCGI($query));
-			if($thisquery != '')
+			if ($thisquery != '')
 				$returnto .= "&returntoquery=$thisquery";
 		}
 		return $returnto;
@@ -738,15 +738,15 @@ class MonacoTemplate extends BaseTemplate {
 				<article id="article" class="mw-body" role="main" aria-labelledby="firstHeading">
 					<a id="top"></a>
 					<?php wfRunHooks('MonacoAfterArticle', array($this)); ?>
-					<?php if(!$wgMonacoUseSitenoticeIsland && $this->data['sitenotice']) { ?><div id="siteNotice"><?php $this->html('sitenotice') ?></div><?php } ?>
-					<?php if(method_exists($this, 'getIndicators')) { echo $this->getIndicators(); } ?>
+					<?php if (!$wgMonacoUseSitenoticeIsland && $this->data['sitenotice']) { ?><div id="siteNotice"><?php $this->html('sitenotice') ?></div><?php } ?>
+					<?php if (method_exists($this, 'getIndicators')) { echo $this->getIndicators(); } ?>
 					<?php $this->printFirstHeading(); ?>
 					<div id="bodyContent" class="mw-body-content body_content">
 						<h2 id="siteSub"><?php $this->msg('tagline') ?></h2>
-						<?php if($this->data['subtitle']) { ?><div id="contentSub"><?php $this->html('subtitle') ?></div><?php } ?>
-						<?php if($this->data['undelete']) { ?><div id="contentSub2"><?php     $this->html('undelete') ?></div><?php } ?>
-						<?php if($this->data['newtalk'] ) { ?><div class="usermessage noprint"><?php $this->html('newtalk')  ?></div><?php } ?>
-						<?php if(!empty($skin->newuemsg)) { echo $skin->newuemsg; } ?>
+						<?php if ($this->data['subtitle']) { ?><div id="contentSub"><?php $this->html('subtitle') ?></div><?php } ?>
+						<?php if ($this->data['undelete']) { ?><div id="contentSub2"><?php     $this->html('undelete') ?></div><?php } ?>
+						<?php if ($this->data['newtalk'] ) { ?><div class="usermessage noprint"><?php $this->html('newtalk')  ?></div><?php } ?>
+						<?php if (!empty($skin->newuemsg)) { echo $skin->newuemsg; } ?>
 
 						<!-- start content -->
 <?php
@@ -756,7 +756,7 @@ class MonacoTemplate extends BaseTemplate {
 						$this->printCategories();
 						?>
 						<!-- end content -->
-						<?php if($this->data['dataAfterContent']) { $this->html('dataAfterContent'); } ?>
+						<?php if ($this->data['dataAfterContent']) { $this->html('dataAfterContent'); } ?>
 						<div class="visualClear"></div>
 					</div>
 
@@ -814,13 +814,13 @@ if ($custom_article_footer !== '') {
 
 		// haleyjd 20140801: Rewrite to use ContextSource/WikiPage instead of wgArticle global which has been removed from MediaWiki 1.23
 		$myContext = $this->getSkin()->getContext();
-		if($myContext->canUseWikiPage())
+		if ($myContext->canUseWikiPage())
 		{
 			$wikiPage   = $myContext->getWikiPage();
 			$timestamp  = $wikiPage->getTimestamp();
 			$lastUpdate = $wgLang->date($timestamp);
 			$userId     = $wikiPage->getUser();
-			if($userId > 0)
+			if ($userId > 0)
 			{
 				$user = User::newFromName($wikiPage->getUserText());
 				$userPageTitle  = $user->getUserPage();
@@ -828,12 +828,12 @@ if ($custom_article_footer !== '') {
 				$userPageExists = $userPageTitle->exists();
 				$userGender     = $user->getOption("gender");
 				$feUserIcon     = $this->blankimg(array( "id" => "fe_user_img", "alt" => "", "class" => ($userGender == "female" ? "sprite user-female" : "sprite user" )));
-				if($userPageExists)
+				if ($userPageExists)
 					$feUserIcon = Html::rawElement( 'a', array( "id" => "fe_user_icon", "href" => $userPageLink ), $feUserIcon );
 ?>
 								<li><?php echo $feUserIcon ?> <div><?php
 				// haleyjd 20171009: must use LinkRenderer for 1.28 and up
-				if(class_exists('\\MediaWiki\\MediaWikiServices') && method_exists('\\MediaWiki\\MediaWikiServices', 'getLinkRenderer')) {
+				if (class_exists('\\MediaWiki\\MediaWikiServices') && method_exists('\\MediaWiki\\MediaWikiServices', 'getLinkRenderer')) {
 					$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 					echo wfMessage('monaco-footer-lastedit')->rawParams($linkRenderer->makeLink($userPageTitle, $user->getName(), array('id' => 'fe_user_link')), Html::element('time', array('datetime' => wfTimestamp(TS_ISO_8601, $$timestamp)), $lastUpdate))->escaped();
 				} else {
@@ -844,7 +844,7 @@ if ($custom_article_footer !== '') {
 			}
 		}
 
-		if($this->data['copyright'])
+		if ($this->data['copyright'])
 		{
 			$feCopyIcon = $this->blankimg(array("id" => "fe_copyright_img", "class" => "sprite copyright", "alt" => ""));
 ?>
@@ -857,12 +857,12 @@ if ($custom_article_footer !== '') {
 						</td>
 						<td class="col2">
 <?php
-		if(!empty($this->data['content_actions']['history']) || !empty($nav_urls['recentchangeslinked']))
+		if (!empty($this->data['content_actions']['history']) || !empty($nav_urls['recentchangeslinked']))
 		{
 ?>
 							<ul id="articleFooterActions3" class="actions clearfix">
 <?php
-			if(!empty($this->data['content_actions']['history']))
+			if (!empty($this->data['content_actions']['history']))
 			{
 				$feHistoryIcon = $this->blankimg(array("id" => "fe_history_img", "class" => "sprite history", "alt" => ""));
 				$feHistoryIcon = Html::rawElement("a", array("id" => "fe_history_icon", "href" => $this->data['content_actions']['history']['href']), $feHistoryIcon);
@@ -871,7 +871,7 @@ if ($custom_article_footer !== '') {
 								<li id="fe_history"><?php echo $feHistoryIcon ?> <div><?php echo $feHistoryLink ?></div></li>
 <?php
 			}
-			if(!empty($nav_urls['recentchangeslinked']))
+			if (!empty($nav_urls['recentchangeslinked']))
 			{
 				$feRecentIcon = $this->blankimg(array("id" => "fe_recent_img", "class" => "sprite recent", "alt" => ""));
 				$feRecentIcon = Html::rawElement("a", array("id" => "fe_recent_icon", "href" => $nav_urls['recentchangeslinked']['href']), $feRecentIcon);
@@ -884,12 +884,12 @@ if ($custom_article_footer !== '') {
 							</ul>
 <?php
 		}
-		if(!empty($nav_urls['permalink']) || !empty($nav_urls['whatlinkshere']))
+		if (!empty($nav_urls['permalink']) || !empty($nav_urls['whatlinkshere']))
 		{
 ?>
 							<ul id="articleFooterActions4" class="actions clearfix">
 <?php
-			if(!empty($nav_urls['permalink']))
+			if (!empty($nav_urls['permalink']))
 			{
 				$fePermaIcon = $this->blankimg(array("id" => "fe_permalink_img", "class" => "sprite move", "alt" => ""));
 				$fePermaIcon = Html::rawElement("a", array("id" => "fe_permalink_icon", "href" => $nav_urls['permalink']['href']), $fePermaIcon);
@@ -898,7 +898,7 @@ if ($custom_article_footer !== '') {
 								<li id="fe_permalink"><?php echo $fePermaIcon ?> <div><?php echo $fePermaLink ?></div></li>
 <?php
 			}
-			if(!empty($nav_urls['whatlinkshere']))
+			if (!empty($nav_urls['whatlinkshere']))
 			{
 				$feWhatIcon = $this->blankimg(array("id" => "fe_whatlinkshere_img", "class" => "sprite pagelink", "alt" => ""));
 				$feWhatIcon = Html::rawElement("a", array("id" => "fe_whatlinkshere_icon", "rel" => "nofollow", "href" => $nav_urls['whatlinkshere']['href']), $feWhatIcon);
@@ -919,7 +919,7 @@ if ($custom_article_footer !== '') {
 								<li id="fe_randompage"><?php echo $feRandIcon ?> <div><?php echo $feRandLink ?></div></li>
 <?php
 		// haleyjd 20140426: support for Extension:MobileFrontend
-		if($this->get('mobileview') !== null)
+		if ($this->get('mobileview') !== null)
 		{
 			$feMobileIcon = $this->blankimg(array("id" => "fe_mobile_img", "class" => "sprite mobile", "alt" => ""));
 			$this->set('mobileview', preg_replace('/(<a[^>]*?href[^>]*?)>/', '$1 rel="nofollow">', $this->get('mobileview')));
@@ -942,7 +942,7 @@ if ($custom_article_footer !== '') {
 			<!-- /PAGE -->
 			<noscript><link rel="stylesheet" property="stylesheet" type="text/css" href="<?php $this->text( 'stylepath' ) ?>/monaco/style/css/noscript.css?<?php echo $wgStyleVersion ?>" /></noscript>
 <?php
-	if(!($wgRequest->getVal('action') != '' || $namespace == NS_SPECIAL)) {
+	if (!($wgRequest->getVal('action') != '' || $namespace == NS_SPECIAL)) {
 		$this->html('JSloader');
 		$this->html('headscripts');
 	}
@@ -979,7 +979,7 @@ if ($custom_article_footer !== '') {
 			</div>
 <?php
 	$monacoSidebar = new MonacoSidebar();
-	if(isset($this->data['content_actions']['edit'])) {
+	if (isset($this->data['content_actions']['edit'])) {
 		$monacoSidebar->editUrl = $this->data['content_actions']['edit']['href'];
 	}
 	echo $monacoSidebar->getCode();
@@ -999,7 +999,7 @@ if ($custom_article_footer !== '') {
 
 		global $wgMonacoDynamicCreateOverride;
 		$createPage = null;
-		if(!wfMessage('dynamic-links-write-article-url')->isDisabled()) {
+		if (!wfMessage('dynamic-links-write-article-url')->isDisabled()) {
 			$createPage = Title::newFromText(wfMessage('dynamic-links-write-article-url')->text());
 		}
 		if ( !isset($createPage) && !empty($wgMonacoDynamicCreateOverride) ) {
@@ -1092,17 +1092,17 @@ if ($custom_article_footer !== '') {
 	$linksArray = $this->data['data']['toolboxlinks'];
 
 	//add user specific links
-	if(!empty($nav_urls['contributions'])) {
+	if (!empty($nav_urls['contributions'])) {
 		$linksArray[] = array('href' => $nav_urls['contributions']['href'], 'text' => wfMessage('contributions')->text());
 	}
-	if(!empty($nav_urls['blockip'])) {
+	if (!empty($nav_urls['blockip'])) {
 		$linksArray[] = array('href' => $nav_urls['blockip']['href'], 'text' => wfMessage('blockip')->text());
 	}
-	if(!empty($nav_urls['emailuser'])) {
+	if (!empty($nav_urls['emailuser'])) {
 		$linksArray[] = array('href' => $nav_urls['emailuser']['href'], 'text' => wfMessage('emailuser')->text());
 	}
 
-	if(is_array($linksArray) && count($linksArray) > 0) {
+	if (is_array($linksArray) && count($linksArray) > 0) {
 		global $wgSpecialPagesRequiredLogin;
 		for ($i = 0, $max = max(array_keys($linksArray)); $i <= $max; $i++) {
 			$item = isset($linksArray[$i]) ? $linksArray[$i] : false;
@@ -1115,15 +1115,15 @@ if ($custom_article_footer !== '') {
 		}
 	}
 
-	if(count($linksArrayL) > 0 || count($linksArrayR) > 0) {
+	if (count($linksArrayL) > 0 || count($linksArrayR) > 0) {
 ?>
 		<tbody id="link_box" class="color2 linkbox_static">
 			<tr>
 				<td>
 					<ul>
 <?php
-		if(is_array($linksArrayL) && count($linksArrayL) > 0) {
-			foreach($linksArrayL as $key => $val) {
+		if (is_array($linksArrayL) && count($linksArrayL) > 0) {
+			foreach ($linksArrayL as $key => $val) {
 				if ($val === false) {
 					echo '<li>&nbsp;</li>';
 				} else {
@@ -1139,8 +1139,8 @@ if ($custom_article_footer !== '') {
 				<td>
 					<ul>
 <?php
-		if(is_array($linksArrayR) && count($linksArrayR) > 0) {
-		    foreach($linksArrayR as $key => $val) {
+		if (is_array($linksArrayR) && count($linksArrayR) > 0) {
+		    foreach ($linksArrayR as $key => $val) {
 				if ($val === false) {
 					echo '<li>&nbsp;</li>';
 				} else {
@@ -1336,27 +1336,27 @@ $this->html('reporttime');
 <?php
 
 		$custom_user_data = "";
-		if( !wfRunHooks( 'CustomUserData', array( &$this, &$tpl, &$custom_user_data ) ) ) {
+		if ( !wfRunHooks( 'CustomUserData', array( &$this, &$tpl, &$custom_user_data ) ) ) {
 			wfDebug( __METHOD__ . ": CustomUserData messed up skin!\n" );
 		}
 
-		if( $custom_user_data ) {
+		if ( $custom_user_data ) {
 			echo $custom_user_data;
 		} else {
 			global $wgUser;
 
 			// Output the facebook connect links that were added with PersonalUrls.
 			// @author Sean Colombo
-			foreach($this->data['userlinks'] as $linkName => $linkData) {
+			foreach ($this->data['userlinks'] as $linkName => $linkData) {
 				//
-				if( !empty($linkData['html']) ) {
+				if ( !empty($linkData['html']) ) {
 					echo $linkData['html'];
 				}
 			}
 
 			if ($wgUser->isLoggedIn()) {
 				// haleyjd 20140420: This needs to use $key => $value syntax to get the proper style for the elements!
-				foreach( array( "username" => "userpage", "mytalk" => "mytalk", "watchlist" => "watchlist" ) as $key => $value ) {
+				foreach ( array( "username" => "userpage", "mytalk" => "mytalk", "watchlist" => "watchlist" ) as $key => $value ) {
 					echo "				" . Html::rawElement( 'span', array( 'id' => "header_$key" ),
 						Html::element( 'a', array( 'href' => $this->data['userlinks'][$value]['href'] ) + Linker::tooltipAndAccesskeyAttribs("pt-$value"), $this->data['userlinks'][$value]['text'] ) ) . "\n";
 				}
@@ -1371,7 +1371,7 @@ $this->html('reporttime');
 						<ul>
 <?php
 				foreach ( $this->data['userlinks']['more'] as $key => $link ) {
-					if($key != 'userpage') { // haleyjd 20140420: Do not repeat user page here.
+					if ($key != 'userpage') { // haleyjd 20140420: Do not repeat user page here.
 						echo Html::rawElement( 'li', array( 'id' => "header_$key" ),
 							Html::element( 'a', array( 'href' => $link['href'] ), $link['text'] ) ) . "\n";
 					}
@@ -1382,7 +1382,7 @@ $this->html('reporttime');
 <?php
 				} else {
 					foreach ( $this->data['userlinks']['more'] as $key => $link ) {
-						if($key != 'userpage') { // haleyjd 20140420: Do not repeat user page here.
+						if ($key != 'userpage') { // haleyjd 20140420: Do not repeat user page here.
 							echo Html::rawElement( 'span', array( 'id' => "header_$key" ),
 								Html::element( 'a', array( 'href' => $link['href'] ), $link['text'] ) ) . "\n";
 						}
@@ -1513,7 +1513,7 @@ $this->html('reporttime');
 		$this->primaryPageBarPrinted = true;
 
 		$count = 0;
-		foreach( $bar as $list ) {
+		foreach ( $bar as $list ) {
 			$count += count($list['links']);
 		}
 		$useCompactBar = $wgMonacoCompactSpecialPages && $count == 1;
@@ -1521,7 +1521,7 @@ $this->html('reporttime');
 
 		$divClass = "reset color1 page_bar clearfix";
 
-		foreach( $bar as $i => $list ) {
+		foreach ( $bar as $i => $list ) {
 			if ( $useCompactBar && $list["id"] == "page_tabs" && !empty($list["links"]) && isset($list["links"]['nstab-special']) ) {
 				$deferredList = $list;
 				$deferredList['class'] .= ' compact_page_tabs';
@@ -1618,7 +1618,7 @@ $this->html('reporttime');
 	// Made a separate method so recipes, answers, etc can override.
 	function printCategories() {
 		// Display categories
-		if($this->data['catlinks']) {
+		if ($this->data['catlinks']) {
 			$this->html('catlinks');
 		}
 	}

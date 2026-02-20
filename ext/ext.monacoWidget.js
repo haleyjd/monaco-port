@@ -1,6 +1,6 @@
 /**
  * Monaco Widget Framework 2.0
- * Replaces old WidgetFramework plugin with frontend-driven dynamic content. 
+ * Replaces old WidgetFramework plugin with frontend-driven dynamic content.
  * Widgets can be defined through the wiki frontend via use of Extension:Gadgets.
  * Added to ResourceLoader as ext.monacoWidget
  *
@@ -34,7 +34,7 @@
 
     if ($('#' + id).length !== 0)
       throw "This widget already exists."; // do not construct duplicate widgets
-      
+
     this.id         = id;
     this.bar        = $(location); // reference to attachment location
     this.title      = title;
@@ -42,8 +42,8 @@
     this.iconTitle  = iconTitle;
     this.iconClass  = iconClass;
     this.iconAction = iconAction;
-    
-    // 
+
+    //
     // Methods
     //
 
@@ -55,7 +55,7 @@
     // Private, creates an AJAX icon button in the widget's title bar
     var makeAjaxToggleDiv = function (widget) {
       var ajaxID = makeCompositeID(widget.id, 'ajax');
-      widget.ajaxPic = $('<div id="' + ajaxID + '" ' + 
+      widget.ajaxPic = $('<div id="' + ajaxID + '" ' +
                          'class="monacoWidgetAjaxToggle sprite" />');
       if (widget.iconTitle)
         widget.ajaxPic.attr('title', widget.iconTitle);
@@ -76,11 +76,11 @@
         widget.titleBar.append(makeAjaxToggleDiv(widget));
       return widget.titleBar;
     };
-  
+
     // Private, creates the widget's content area
     var makeContentArea = function (widget) {
       var contentID = makeCompositeID(widget.id, 'content');
-      widget.content = $('<div id="' + contentID + '" ' + 
+      widget.content = $('<div id="' + contentID + '" ' +
                        'class="sidebox_contents monacoWidgetContentArea" />');
       return widget.content;
     };
@@ -91,29 +91,29 @@
       widget.body.append(makeTitleBar(widget), makeContentArea(widget));
       return widget.body;
     };
-    
+
     // Icon methods
-    
+
     // Start AJAX loading animation
     this.doAjaxAnimation = function () {
       if (this.ajaxPic)
         this.ajaxPic.removeClass(this.iconClass).addClass('progress').attr('title', 'Loading...').css('cursor', 'wait');
     };
-    
+
     // Stop AJAX loading animation
     this.stopAjaxAnimation = function () {
       if (this.ajaxPic)
         this.ajaxPic.removeClass('progress').addClass(this.iconClass).attr('title', this.iconTitle).css('cursor', 'pointer');
     };
-    
+
     // Turn the icon into a Refresh button
     this.makeRefreshPic = function () {
       if (this.ajaxPic)
         this.ajaxPic.removeClass('progress').addClass('refresh').attr('title', 'Refresh').css('cursor', 'pointer');
     };
-    
+
     // Content methods
-    
+
     // Add a content element
     this.addContentElement = function (elem, limitSize) {
       var newElem = $(elem);
@@ -122,19 +122,19 @@
       this.content.append(newElem);
       return newElem;
     };
-    
+
     // Add a standard list content element
     this.addStdListContentElement = function (limitSize) {
       return this.addContentElement(
-        $('<ul id="' + makeCompositeID(this.id, 'stdlist') + '" class="monacoWidgetStdList" />'), 
+        $('<ul id="' + makeCompositeID(this.id, 'stdlist') + '" class="monacoWidgetStdList" />'),
         limitSize);
     };
-    
+
     // Empty the standard list content element
     this.emptyStdListContentElement = function () {
       $('#' + makeCompositeID(this.id, 'stdlist')).empty();
     };
-   
+
     // Construct the bar on the page
     if (priority) {
       if (location === '#widget_sidebar') // for left sidebar, add after navigation widget
@@ -144,31 +144,31 @@
     }
     else
       this.bar.append(makeWidgetBody(this)); // add at end
-      
+
     // Add custom content via callback if requested
     if (contentCB)
       contentCB(this);
-      
+
     // If this widget is dynamic and automatic is true, auto-click it after the interval.
     if (this.ajaxPic && automatic) {
       var cWidget = this;
       window.setTimeout(function () { cWidget.ajaxPic.click(); }, automatic);
     }
   };
-  
+
   //
   // Statics
   //
-  
+
   // Manage widgets
   mw.libs.monacoWidget.Exists = function (id) {
     return ($('#' + id).length !== 0);
   };
-  
+
   mw.libs.monacoWidget.IsMonaco = function () {
     return (mw.config.get('skin') === 'monaco');
   };
-  
+
   // Standard query 1: Top 7 Recent changes
   mw.libs.monacoWidget.GetRecentChangesQuery = function () {
     return ({
@@ -206,7 +206,7 @@
       return '<a href="' + mw.util.getUrl('User:' + user) + '" rel="nofollow">' + user + '</a>';
     }
   };
-  
+
   /*
    * JavaScript Pretty Date
    * Copyright (c) 2011 John Resig (ejohn.org)
@@ -224,8 +224,8 @@
 
     if (day_diff < 0) // possible when there's time drift between server and client
       return "just now";
-    
-    return day_diff == 0 && 
+
+    return day_diff == 0 &&
       (diff < 60 && "just now" ||
        diff < 120 && "1 minute ago" ||
        diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||

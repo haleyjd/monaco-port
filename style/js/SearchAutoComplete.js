@@ -26,7 +26,7 @@ function sf_focus(e) {
 				deferRequestBy: 1000,
 				appendTo: '#search_box'
 			});
-		    $('body').children('div').slice(-1).css('zIndex', 20000);
+			$('body').children('div').slice(-1).css('zIndex', 20000);
 		});
 	}
 

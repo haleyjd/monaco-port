@@ -29,10 +29,10 @@
   //
   mw.libs.monacoWidget = function (id, title, priority, location, dynamic, automatic, iconTitle, iconClass, contentCB, iconAction) {
     // Some defaults
-    if(!location)
+    if (!location)
       location = '#widget_sidebar';
-      
-    if($('#' + id).length !== 0)
+
+    if ($('#' + id).length !== 0)
       throw "This widget already exists."; // do not construct duplicate widgets
       
     this.id         = id;
@@ -57,11 +57,11 @@
       var ajaxID = makeCompositeID(widget.id, 'ajax');
       widget.ajaxPic = $('<div id="' + ajaxID + '" ' + 
                          'class="monacoWidgetAjaxToggle sprite" />');
-      if(widget.iconTitle)
+      if (widget.iconTitle)
         widget.ajaxPic.attr('title', widget.iconTitle);
-      if(widget.iconClass)
+      if (widget.iconClass)
         widget.ajaxPic.addClass(widget.iconClass);
-      if(widget.iconAction) {
+      if (widget.iconAction) {
         var fn = widget.iconAction;
         widget.ajaxPic.on('click', function () { fn(widget); });
       }
@@ -72,7 +72,7 @@
     var makeTitleBar = function (widget) {
       var titleID = makeCompositeID(widget.id, 'title');
       widget.titleBar = $('<h3 id="' + titleID + '" class="color1 sidebox_title">' + widget.title + '</h3>');
-      if(widget.dynamic)
+      if (widget.dynamic)
         widget.titleBar.append(makeAjaxToggleDiv(widget));
       return widget.titleBar;
     };
@@ -96,19 +96,19 @@
     
     // Start AJAX loading animation
     this.doAjaxAnimation = function () {
-      if(this.ajaxPic)
+      if (this.ajaxPic)
         this.ajaxPic.removeClass(this.iconClass).addClass('progress').attr('title', 'Loading...').css('cursor', 'wait');
     };
     
     // Stop AJAX loading animation
     this.stopAjaxAnimation = function () {
-      if(this.ajaxPic)
+      if (this.ajaxPic)
         this.ajaxPic.removeClass('progress').addClass(this.iconClass).attr('title', this.iconTitle).css('cursor', 'pointer');
     };
     
     // Turn the icon into a Refresh button
     this.makeRefreshPic = function () {
-      if(this.ajaxPic)
+      if (this.ajaxPic)
         this.ajaxPic.removeClass('progress').addClass('refresh').attr('title', 'Refresh').css('cursor', 'pointer');
     };
     
@@ -117,8 +117,8 @@
     // Add a content element
     this.addContentElement = function (elem, limitSize) {
       var newElem = $(elem);
-      if(limitSize)
-        newElem.addClass('widget_contents'); // hidden overflow x, auto overflow y, 250px max height      
+      if (limitSize)
+        newElem.addClass('widget_contents'); // hidden overflow x, auto overflow y, 250px max height
       this.content.append(newElem);
       return newElem;
     };
@@ -136,8 +136,8 @@
     };
    
     // Construct the bar on the page
-    if(priority) {
-      if(location === '#widget_sidebar') // for left sidebar, add after navigation widget
+    if (priority) {
+      if (location === '#widget_sidebar') // for left sidebar, add after navigation widget
         makeWidgetBody(this).insertAfter('#navigation_widget');
       else
         this.bar.prepend(makeWidgetBody(this)); // add at beginning
@@ -146,11 +146,11 @@
       this.bar.append(makeWidgetBody(this)); // add at end
       
     // Add custom content via callback if requested
-    if(contentCB)
+    if (contentCB)
       contentCB(this);
       
     // If this widget is dynamic and automatic is true, auto-click it after the interval.
-    if(this.ajaxPic && automatic) {
+    if (this.ajaxPic && automatic) {
       var cWidget = this;
       window.setTimeout(function () { cWidget.ajaxPic.click(); }, automatic);
     }
@@ -180,24 +180,24 @@
       rclimit: '7'
     });
   };
-  
+
   // Perform an API query and execute the given callback with the data
   // resulting from the API query. Asynchronous (AJAX).
   mw.libs.monacoWidget.DoAPIQuery = function (widget, query, callback) {
     (new mw.Api()).get(query).done(function (data) { callback(widget, data); });
   };
-  
+
   // Create a link to an article
   mw.libs.monacoWidget.ArticleLink = function (title, revs) {
     var href = mw.util.getUrl(title);
-    if(revs)
+    if (revs)
       href += '?curid=' + revs.pageid + '&diff=' + revs.revid + '&oldid=' + revs.old_revid;
     return '<a href="' + href + '" rel="nofollow">' + title + '</a>';
   };
-  
+
   // Create a link to a user page
   mw.libs.monacoWidget.UserLink = function (user) {
-    if(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/.test(user) || /(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}/.test(user)) {
+    if (/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/.test(user) || /(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}/.test(user)) {
       // anonymous users rarely have user pages so link to Special:Contributions
       return '<a href="' + mw.util.getUrl('Special:Contributions') + '/' + user + '" rel="nofollow">Anonymous user</a>';
     } else {
@@ -218,11 +218,11 @@
     var date = new Date((time || "")),
       diff = (((new Date()).getTime() - date.getTime()) / 1000),
       day_diff = Math.floor(diff / 86400);
-      
-    if(isNaN(day_diff) || day_diff >= 31)
+
+    if (isNaN(day_diff) || day_diff >= 31)
       return;
-    
-    if(day_diff < 0) // possible when there's time drift between server and client
+
+    if (day_diff < 0) // possible when there's time drift between server and client
       return "just now";
     
     return day_diff == 0 && 

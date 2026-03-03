@@ -119,8 +119,8 @@ class SkinMonaco extends SkinTemplate {
 	}
 
 	function showMasthead() {
-		global $wgMonacoUseMasthead;
-		if ( !$wgMonacoUseMasthead ) {
+		$useMasthead = $this->monacoConfig->get( 'MonacoUseMasthead' );
+		if ( !$useMasthead ) {
 			return false;
 		}
 		return !!$this->getMastheadUser();
@@ -611,6 +611,15 @@ class SkinMonaco extends SkinTemplate {
 
 class MonacoTemplate extends BaseTemplate {
 
+	/**
+	 * @var Config
+	 */
+	private $monacoConfig;
+
+	public function __construct() {
+		$this->monacoConfig = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'monaco' );
+	}
+
 	/*
 	 * Build returnto parameter with new returntoquery from MW 1.16
 	 *
@@ -655,14 +664,13 @@ class MonacoTemplate extends BaseTemplate {
 	 * @author Daniel Friesen
 	 */
 	function useUserMore() {
-		global $wgMonacoUseMoreButton;
-		return $wgMonacoUseMoreButton;
+		return $this->monacoConfig->get( 'MonacoUseMoreButton' );
 	}
 
 	function execute() {
 		global $wgContLang, $wgUser, $wgLogo, $wgStyleVersion, $wgRequest, $wgTitle, $wgSitename;
-		global $wgMonacoUseSitenoticeIsland;
 
+		$useSitenoticeIsland = $this->monacoConfig->get( 'MonacoUseSitenoticeIsland' );
 		$skin = $this->data['skin'];
 		$action = $wgRequest->getText('action');
 		$namespace = $wgTitle->getNamespace();
@@ -724,7 +732,7 @@ class MonacoTemplate extends BaseTemplate {
 		<div id="page_wrapper">
 <?php wfRunHooks('MonacoBeforePage', array($this)); ?>
 <?php $this->printBeforePage(); ?>
-<?php if ( $wgMonacoUseSitenoticeIsland && $this->data['sitenotice'] ) { ?>
+<?php if ( $useSitenoticeIsland && $this->data['sitenotice'] ) { ?>
 			<div class="page">
 				<div id="siteNotice"><?php $this->html('sitenotice') ?></div>
 			</div>
@@ -739,7 +747,7 @@ class MonacoTemplate extends BaseTemplate {
 				<article id="article" class="mw-body" role="main" aria-labelledby="firstHeading">
 					<a id="top"></a>
 					<?php wfRunHooks('MonacoAfterArticle', array($this)); ?>
-					<?php if (!$wgMonacoUseSitenoticeIsland && $this->data['sitenotice']) { ?><div id="siteNotice"><?php $this->html('sitenotice') ?></div><?php } ?>
+					<?php if (!$useSitenoticeIsland && $this->data['sitenotice']) { ?><div id="siteNotice"><?php $this->html('sitenotice') ?></div><?php } ?>
 					<?php if (method_exists($this, 'getIndicators')) { echo $this->getIndicators(); } ?>
 					<?php $this->printFirstHeading(); ?>
 					<div id="bodyContent" class="mw-body-content body_content">
@@ -998,13 +1006,13 @@ if ($custom_article_footer !== '') {
 	if ( $showDynamicLinks ) {
 		$dynamicLinksInternal = array();
 
-		global $wgMonacoDynamicCreateOverride;
+		$dynamicCreateOverride = $this->monacoConfig->get( 'MonacoDynamicCreateOverride' );
 		$createPage = null;
 		if (!wfMessage('dynamic-links-write-article-url')->isDisabled()) {
 			$createPage = Title::newFromText(wfMessage('dynamic-links-write-article-url')->text());
 		}
-		if ( !isset($createPage) && !empty($wgMonacoDynamicCreateOverride) ) {
-			$createPage = Title::newFromText($wgMonacoDynamicCreateOverride);
+		if ( !isset($createPage) && !empty($dynamicCreateOverride) ) {
+			$createPage = Title::newFromText($dynamicCreateOverride);
 		}
 		if ( !isset($createPage) ) {
 			$specialCreatePage = SpecialPageFactory::getPage('CreatePage');
@@ -1157,14 +1165,17 @@ if ($custom_article_footer !== '') {
 				</td>
 			</tr>
 <?php
-		global $wgMonacoEnablePaypal, $wgMonacoPaypalID, $wgMonacoEnablePatreon, $wgMonacoPatreonURL;
-		if ( $wgMonacoEnablePaypal ) {
+		$enablePaypal = $this->monacoConfig->get( 'MonacoEnablePaypal' );
+		$paypalID = $this->monacoConfig->get( 'MonacoPaypalID' );
+		$enablePatreon = $this->monacoConfig->get( 'MonacoEnablePatreon' );
+		$patreonURL = $this->monacoConfig->get( 'MonacoPatreonURL' );
+		if ( $enablePaypal ) {
 ?>
 			<tr>
 				<td colspan="2" style="text-align:center;">
 					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" title="PayPal">
 						<input type="hidden" name="cmd" value="_s-xclick">
-						<input type="hidden" name="hosted_button_id" value="<?php echo $wgMonacoPaypalID ?>">
+						<input type="hidden" name="hosted_button_id" value="<?php echo $paypalID ?>">
 						<input type="image" src="<?php $this->text('stylepath') ?>/monaco/style/images/paypal.png" name="submit" alt="PayPal - The safer, easier way to pay online!" style="border: 0; width:139px; margin:0;">
 						<img alt="" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1" style="border: 0;">
 					</form>
@@ -1172,11 +1183,11 @@ if ($custom_article_footer !== '') {
 			</tr>
 <?php
 		}
-		if ( $wgMonacoEnablePatreon ) {
+		if ( $enablePatreon ) {
 ?>
 			<tr>
 				<td colspan="2" style="text-align:center;">
-					<a href="<?php echo $wgMonacoPatreonURL ?>" target="_blank" rel="nofollow"><img alt="Patreon" src="<?php $this->text('stylepath') ?>/monaco/style/images/patreon.png" width="139" height="37"></a>
+					<a href="<?php echo $patreonURL ?>" target="_blank" rel="nofollow"><img alt="Patreon" src="<?php $this->text('stylepath') ?>/monaco/style/images/patreon.png" width="139" height="37"></a>
 				</td>
 			</tr>
 <?php
@@ -1509,7 +1520,7 @@ $this->html('reporttime');
 
 	private $primaryPageBarPrinted = false;
 	function printCustomPageBar( $bar ) {
-		global $wgMonacoCompactSpecialPages;
+		$compactSpecialPages = $this->monacoConfig->get( 'MonacoCompactSpecialPages' );
 		$isPrimary = !$this->primaryPageBarPrinted;
 		$this->primaryPageBarPrinted = true;
 
@@ -1517,7 +1528,7 @@ $this->html('reporttime');
 		foreach ( $bar as $list ) {
 			$count += count($list['links']);
 		}
-		$useCompactBar = $wgMonacoCompactSpecialPages && $count == 1;
+		$useCompactBar = $compactSpecialPages && $count == 1;
 		$deferredList = null;
 
 		$divClass = "reset color1 page_bar clearfix";

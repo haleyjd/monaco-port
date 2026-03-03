@@ -36,9 +36,10 @@ class SkinMonaco extends SkinTemplate {
 	 */
 	private $monacoConfig;
 
-	/** Using monaco. */
-	var $skinname = 'monaco', $stylename = 'monaco',
-		$template = 'MonacoTemplate', $useHeadElement = true;
+	/** Using Monaco */
+	public $skinname = 'monaco';
+	public $stylename = 'monaco';
+	public $template = 'MonacoTemplate';
 
 	public function __construct() {
 		$this->monacoConfig = \MediaWiki\MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'monaco' );
@@ -307,7 +308,7 @@ class SkinMonaco extends SkinTemplate {
 		return $this->parseToolboxLinks($this->getLines('Monaco-toolbox'));
 	}
 
-	var $lastExtraIndex = 1000;
+	private $lastExtraIndex = 1000;
 
 	/**
 	 * @author Inez Korczynski <inez@wikia.com>
@@ -1506,7 +1507,7 @@ $this->html('reporttime');
 		$this->printCustomPageBar( $bar );
 	}
 
-	var $primaryPageBarPrinted = false;
+	private $primaryPageBarPrinted = false;
 	function printCustomPageBar( $bar ) {
 		global $wgMonacoCompactSpecialPages;
 		$isPrimary = !$this->primaryPageBarPrinted;

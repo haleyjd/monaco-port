@@ -10,7 +10,7 @@ also previously deployed at the Orain non-profit wiki farm before it went
 offline.
 
 Compared to the original version of the skin, this fork now supports MediaWiki
-versions 1.27 to 1.31 officially, with verified support for 1.32+ in the works.
+versions 1.27 to 1.32 officially, with verified support for 1.33+ in the works.
 This codebase will usually remain up-to-date against MediaWiki, and will drop
 support for older versions unconditionally once it becomes impractical to
 continue to support them.

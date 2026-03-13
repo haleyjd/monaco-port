@@ -46,7 +46,7 @@ function openHubMenu(event) {
 		$("#headerMenuHub").makeHeaderMenu('headerButtonHub', openHubMenu, {attach_to: "#headerButtonHub", attach_at: "bottom"});
 	}
 	else {
-		$.get(wgScript + '?action=ajax&rs=GetHubMenu&cb=' + wgMWrevId + '-' + wgStyleVersion, function(html) {
+		$.get(wgScript + '?action=ajax&rs=GetHubMenu&cb=' + wgMWrevId, function(html) {
 			$("#positioned_elements").append(html);
 			$("#headerMenuHub").makeHeaderMenu('headerButtonHub', openHubMenu, {attach_to: "#headerButtonHub", attach_at: "bottom"});
 		});
@@ -61,7 +61,7 @@ function openUserMenu(event) {
 		$("#headerMenuUser").makeHeaderMenu("headerButtonUser", openUserMenu, {attach_to: "#userData", attach_at: "bottom"});
 	}
 	else {
-		$.get(wgScript + '?action=ajax&rs=GetUserMenu&rsargs[]='+ wgUserName +'&uselang='+ wgUserLanguage + '&cb=' + wgMWrevId + '-' + wgStyleVersion,
+		$.get(wgScript + '?action=ajax&rs=GetUserMenu&rsargs[]='+ wgUserName +'&uselang='+ wgUserLanguage + '&cb=' + wgMWrevId,
 			function(html) {
 				$("#positioned_elements").append(html);
 				$("#headerMenuUser").makeHeaderMenu("headerButtonUser", openUserMenu, {attach_to: "#userData", attach_at: "bottom"});

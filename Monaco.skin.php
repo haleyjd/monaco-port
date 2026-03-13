@@ -668,7 +668,7 @@ class MonacoTemplate extends BaseTemplate {
 	}
 
 	function execute() {
-		global $wgContLang, $wgUser, $wgLogo, $wgStyleVersion, $wgRequest, $wgTitle, $wgSitename;
+		global $wgContLang, $wgUser, $wgLogo, $wgRequest, $wgTitle, $wgSitename;
 
 		$useSitenoticeIsland = $this->monacoConfig->get( 'MonacoUseSitenoticeIsland' );
 		$skin = $this->data['skin'];
@@ -949,7 +949,7 @@ if ($custom_article_footer !== '') {
 				<!-- /ARTICLE FOOTER -->
 			</div>
 			<!-- /PAGE -->
-			<noscript><link rel="stylesheet" property="stylesheet" type="text/css" href="<?php $this->text( 'stylepath' ) ?>/monaco/style/css/noscript.css?<?php echo $wgStyleVersion ?>" /></noscript>
+			<noscript><link rel="stylesheet" property="stylesheet" type="text/css" href="<?php echo OutputPage::transformResourcePath($this->monacoConfig, $this->get( 'stylepath' ).'/monaco/style/css/noscript.css') ?>" /></noscript>
 <?php
 	if (!($wgRequest->getVal('action') != '' || $namespace == NS_SPECIAL)) {
 		$this->html('JSloader');

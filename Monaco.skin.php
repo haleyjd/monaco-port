@@ -187,23 +187,26 @@ class SkinMonaco extends SkinTemplate {
 	 * @author Inez Korczynski <inez@wikia.com>
 	 */
 	public function addVariables(&$obj, &$tpl) {
-		global $wgLang, $wgContLang, $wgUser, $wgRequest, $wgTitle, $parserMemc;
+		global $wgLang, $wgContLang, $wgUser, $wgRequest, $wgTitle;
+		global $parserMemc; // removed in MW 1.32
 
 		// We want to cache populated data only if user language is same with wiki language
 		$cache = $wgLang->getCode() == $wgContLang->getCode();
 
 		wfDebugLog('monaco', sprintf('Cache: %s, wgLang: %s, wgContLang %s', (int) $cache, $wgLang->getCode(), $wgContLang->getCode()));
 
+		// ensure backward compatibility (getParserCache introduced in MW 1.30)
+		$pmc = $parserMemc ?? MediaWikiServices::getInstance()->getParserCache()->getCacheStorage();
 		if ($cache) {
-			$key = wfMemcKey('MonacoDataOld');
-			$data_array = $parserMemc->get($key);
+			$key = ObjectCache::getLocalClusterInstance()->makeKey('MonacoDataOld');
+			$data_array = $pmc->get($key);
 		}
 
 		if (empty($data_array)) {
 			wfDebugLog('monaco', 'There is no cached $data_array, let\'s populate');
 			$data_array['toolboxlinks'] = $this->getToolboxLinks();
 			if ($cache) {
-				$parserMemc->set($key, $data_array, 4 * 60 * 60 /* 4 hours */);
+				$pmc->set($key, $data_array, 4 * 60 * 60 /* 4 hours */);
 			}
 		}
 
